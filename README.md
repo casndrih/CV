@@ -84,7 +84,7 @@ Nginx deployments must add an equivalent rule inside the relevant server block:
         return 403;
     }
 
-Keep the CV file at public/doc/cv.pdf for the current controller implementation. Do not expose the document through another public alias or CDN URL. If you change the file location, update FrontendController::downloadCv() accordingly. Hire-request PDFs are saved under storage/app/private/hire-requests and are not directly web-accessible.
+The CV is intentionally excluded from the public repository and must be uploaded to storage/app/private/cv.pdf on the server. The controller reads it from Laravel's private local disk and serves it only after LinkedIn sign-in. Do not copy it into public/, expose it through a CDN, or add it to Git. Hire-request PDFs are also saved under storage/app/private/hire-requests and are not directly web-accessible.
 
 ## Production deployment checklist
 - Set APP_ENV=production, APP_DEBUG=false, a strong APP_KEY, and the correct HTTPS APP_URL.
@@ -94,9 +94,9 @@ Keep the CV file at public/doc/cv.pdf for the current controller implementation.
 - Run composer install --no-dev --optimize-autoloader.
 - Run npm ci && npm run production.
 - Run php artisan migrate --force.
-- Ensure storage/ and bootstrap/cache/ are writable by the web-server user.
+- Upload your CV PDF to storage/app/private/cv.pdf (the file is intentionally not tracked in Git). For an existing deployment, copy public/doc/cv.pdf to this private path before pulling the change, then remove the old public copy.\n- Ensure storage/ and bootstrap/cache/ are writable by the web-server user.
 - Point the web-server document root at the repository's public/ directory.
-- Verify that /doc/cv.pdf returns 403 and /view-cv redirects a signed-out visitor to LinkedIn.
+- Verify that /doc/cv.pdf returns 403, /view-cv redirects a signed-out visitor to LinkedIn, and the private file exists at storage/app/private/cv.pdf.
 - Clear and rebuild caches:
 
       php artisan optimize:clear
