@@ -1,66 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Casper Ndrih — CV & Portfolio
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel 11 personal portfolio and CV website. The portfolio homepage is public. LinkedIn OpenID Connect is required only when a visitor requests the CV download.
 
-## About Laravel
+## Stack
+- PHP 8.2+ and Laravel 11
+- Laravel Socialite (LinkedIn OpenID Connect)
+- SQLite by default; MySQL can be configured
+- Tailwind CSS 3, Flowbite, Laravel Mix 6
+- DomPDF for generated hire-request PDFs
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
+- Public portfolio homepage, skills, experience and project highlights.
+- LinkedIn sign-in only for the protected CV download.
+- LinkedIn visitor records and login statistics.
+- Hire-me request form with PDF generation.
+- Responsive light/dark presentation and Lottie animations.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requirements
+- PHP 8.2+ with OpenSSL, PDO, Mbstring, Tokenizer, XML, Ctype, JSON, Fileinfo and DOM extensions.
+- Composer 2.
+- Node.js 20+ and npm.
+- Apache with mod_rewrite for the included direct-CV access rule, or an equivalent Nginx rule.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Local installation
+1. Clone the repository and enter the project directory.
+2. Install dependencies:
 
-## Learning Laravel
+       composer install
+       npm ci
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. Create the environment file and application key:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+       cp .env.example .env
+       php artisan key:generate
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+4. Configure .env:
+   - Set APP_URL to the URL where the site is hosted.
+   - Set database connection and credentials if not using SQLite.
+   - Set LINKEDIN_CLIENT_ID, LINKEDIN_CLIENT_SECRET, and LINKEDIN_REDIRECT_URI.
+   - Keep APP_DEBUG=false in production.
+   - Use HTTPS and set SESSION_SECURE_COOKIE=true in production.
 
-## Laravel Sponsors
+5. Create the SQLite file when using SQLite, then run migrations:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+       touch database/database.sqlite
+       php artisan migrate
 
-### Premium Partners
+6. Compile frontend assets:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+       npm run production
 
-## Contributing
+7. Start the local server:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+       php artisan serve
 
-## Code of Conduct
+Open http://127.0.0.1:8000.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## LinkedIn OpenID Connect setup
+1. Create or configure an application in the LinkedIn Developer Portal.
+2. Enable the Sign In with LinkedIn using OpenID Connect product.
+3. Add the exact redirect URL configured in LINKEDIN_REDIRECT_URI, for example:
 
-## Security Vulnerabilities
+       https://your-domain.example/auth/linkedin/callback
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. Add credentials to the server environment only:
+
+       LINKEDIN_CLIENT_ID=your-client-id
+       LINKEDIN_CLIENT_SECRET=your-client-secret
+       LINKEDIN_REDIRECT_URI=https://your-domain.example/auth/linkedin/callback
+
+The application requests the openid, profile, and email scopes. Never commit a real .env file or place the client secret in frontend JavaScript.
+
+## CV download protection
+- The homepage route / is public.
+- /view-cv checks the Laravel authenticated session. Guests are sent to LinkedIn and returned to their originally requested CV URL after successful authentication.
+- The PDF is served by Laravel as an attachment with private/no-cache headers.
+- The included public/.htaccess denies direct HTTP requests to /doc/. This requires Apache mod_rewrite and .htaccess overrides to be enabled.
+
+Nginx deployments must add an equivalent rule inside the relevant server block:
+
+    location ^~ /doc/ {
+        deny all;
+        return 403;
+    }
+
+Keep the CV file at public/doc/cv.pdf for the current controller implementation. Do not expose the document through another public alias or CDN URL. If you change the file location, update FrontendController::downloadCv() accordingly.
+
+## Production deployment checklist
+- Set APP_ENV=production, APP_DEBUG=false, a strong APP_KEY, and the correct HTTPS APP_URL.
+- Set SESSION_DRIVER=file (or provision a real sessions table before using the database driver).
+- Set SESSION_SECURE_COOKIE=true and keep SESSION_HTTP_ONLY=true.
+- Configure the LinkedIn callback URL to exactly match the LinkedIn Developer Portal.
+- Run composer install --no-dev --optimize-autoloader.
+- Run npm ci && npm run production.
+- Run php artisan migrate --force.
+- Ensure storage/ and bootstrap/cache/ are writable by the web-server user.
+- Point the web-server document root at the repository's public/ directory.
+- Verify that /doc/cv.pdf returns 403 and /view-cv redirects a signed-out visitor to LinkedIn.
+- Clear and rebuild caches:
+
+      php artisan optimize:clear
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+
+## Tests
+Run the feature and unit test suites:
+
+    php artisan test
+
+GitHub Actions runs the PHP test suite and compiles production frontend assets on pushes and pull requests to main.
+
+## Important credential note
+If a LinkedIn client secret was ever included in an earlier archive or commit, rotate it in the LinkedIn Developer Portal. Removing a file from the latest branch does not erase it from Git history. Store the replacement only in the hosting environment or GitHub Actions secrets.
 
 ## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is distributed under the MIT License. See LICENSE.
