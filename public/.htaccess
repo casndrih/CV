@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # The CV must only be delivered by Laravel's authenticated /view-cv route.
+    RewriteRule ^doc(?:/|$) - [F,L,NC]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
