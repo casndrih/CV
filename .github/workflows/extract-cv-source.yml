@@ -1,0 +1,56 @@
+name: Extract CV source archive
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/extract-cv-source.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s cv.zip || { echo "::error::cv.zip is missing or empty"; exit 1; }
+          workdir="$RUNNER_TEMP/cv-source"
+          mkdir -p "$workdir"
+          unzip -q cv.zip -d "$workdir"
+
+          mapfile -t top_dirs < <(find "$workdir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+          root_files=$(find "$workdir" -mindepth 1 -maxdepth 1 -type f | wc -l)
+
+          if [[ "$root_files" -eq 0 && "${#top_dirs[@]}" -eq 1 ]]; then
+            source_dir="$workdir/${top_dirs[0]}"
+          else
+            source_dir="$workdir"
+          fi
+
+          # Keep the archive and this extraction workflow out of the extracted payload.
+          rsync -a --exclude='.git' --exclude='cv.zip' \
+            --exclude='.github/workflows/extract-cv-source.yml' \
+            "$source_dir/" ./
+
+      - name: Commit extracted source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -A
+          if git diff --cached --quiet; then
+            echo "The archive did not add or change any source files."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Extract web CV source from archive"
+          git push
