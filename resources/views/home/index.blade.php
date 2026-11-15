@@ -111,7 +111,7 @@
                         <path
                             d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" />
                     </svg>
-                    View CV
+                    Download CV
                 </a>
 
                 <a href="#"
@@ -936,11 +936,6 @@
 
     </div>
 
-   <!-- Include Signin Modal if user is guest -->
-@guest
-    @include('modals.auth-modal')
-@endguest
-
 @include('modals.hire-modal')
 
 @endsection
@@ -954,16 +949,6 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
     {{-- Lottie animation --}}
-    <script>
-        lottie.loadAnimation({
-            container: document.getElementById('search-animation'),
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: "{{ asset('images/lottie/docs.json') }}"
-        });
-    </script>
-
     {{-- Lottie animation --}}
     <script>
         lottie.loadAnimation({
@@ -975,16 +960,4 @@
         });
     </script>
 
-    {{-- Show auth modal if not authenticated --}}
-    <script>
-        $(document).ready(function () {
-            const isAuthenticated = @json(auth()->check());
-            const $modal = $('#auth-modal');
-
-            // If modal exists and user is not authenticated, show it
-            if ($modal.length && !isAuthenticated) {
-                $modal.removeClass('hidden').modal('show'); // or use .show() if using custom CSS
-            }
-        });
-    </script>
 @endsection
