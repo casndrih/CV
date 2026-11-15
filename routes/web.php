@@ -4,30 +4,16 @@ use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\HireMeController;
 use Illuminate\Support\Facades\Route;
 
-// Frontend routes
-Route::controller(FrontendController::class)->group(function () {
-    Route::get('/', 'index')->name('home');
-});
+// The portfolio remains publicly accessible.
+Route::get('/', [FrontendController::class, 'index'])->name('home');
 
-Route::post('/hire-me', [HireMeController::class, 'store']);
+Route::post('/hire-me', [HireMeController::class, 'store'])->name('hire-me.store');
 
-Route::get('/view-cv', function () {
-    // If file is stored in public/doc
-    $file = public_path('doc/cv.pdf');
+// Only the CV endpoint requires LinkedIn authentication.
+Route::get('/view-cv', [FrontendController::class, 'downloadCv'])->name('view.cv');
 
-    // Or if it’s in storage:
-    // $file = storage_path('app/public/doc/cv.pdf');
+Route::get('/auth/linkedin', [FrontendController::class, 'redirectToLinkedin'])
+    ->name('linkedin.redirect');
 
-    if (file_exists($file)) {
-        return response()->file($file, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="CNdrih_CV.pdf"'
-        ]);
-    } else {
-        abort(404, 'File not found.');
-    }
-})->name('view.cv');
-
-Route::get('/auth/linkedin', [FrontendController::class, 'redirectToLinkedin']);
-
-Route::get('/auth/linkedin/callback', [FrontendController::class, 'handleLinkedinCallback']);
+Route::get('/auth/linkedin/callback', [FrontendController::class, 'handleLinkedinCallback'])
+    ->name('linkedin.callback');
