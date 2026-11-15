@@ -29,7 +29,7 @@
     <meta property="twitter:image" content="{{ URL::asset('images/pic.jpg') }}">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="{{ URL::asset('/favicon.svg') }}">
 
     <!-- CSS -->
     <link href="{{ URL::asset('/css/app.css') }}" rel="stylesheet">
