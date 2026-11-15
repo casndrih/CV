@@ -26,7 +26,7 @@ class FrontendController extends Controller
             return redirect()->guest(route('linkedin.redirect'));
         }
 
-        $file = public_path('doc/cv.pdf');
+        $file = storage_path('app/private/cv.pdf');
 
         abort_unless(is_file($file) && is_readable($file), 404, 'CV file not found.');
 
