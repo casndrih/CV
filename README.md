@@ -94,7 +94,8 @@ The CV is intentionally excluded from the public repository and must be uploaded
 - Run composer install --no-dev --optimize-autoloader.
 - Run npm ci && npm run production.
 - Run php artisan migrate --force.
-- Upload your CV PDF to storage/app/private/cv.pdf (the file is intentionally not tracked in Git). For an existing deployment, copy public/doc/cv.pdf to this private path before pulling the change, then remove the old public copy.\n- Ensure storage/ and bootstrap/cache/ are writable by the web-server user.
+- Upload your CV PDF to storage/app/private/cv.pdf (the file is intentionally not tracked in Git). For an existing deployment, copy public/doc/cv.pdf to this private path before pulling the change, then remove the old public copy.
+- Ensure storage/ and bootstrap/cache/ are writable by the web-server user.
 - Point the web-server document root at the repository's public/ directory.
 - Verify that /doc/cv.pdf returns 403, /view-cv redirects a signed-out visitor to LinkedIn, and the private file exists at storage/app/private/cv.pdf.
 - Clear and rebuild caches:
