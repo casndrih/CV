@@ -13,7 +13,7 @@ A Laravel 11 personal portfolio and CV website. The portfolio homepage is public
 - Public portfolio homepage, skills, experience and project highlights.
 - LinkedIn sign-in only for the protected CV download.
 - LinkedIn visitor records and login statistics.
-- Hire-me request form with PDF generation.
+- Hire-me request form with PDF generation; generated client request PDFs are stored on Laravel's private local disk, outside the public web root.
 - Responsive light/dark presentation and Lottie animations.
 
 ## Requirements
@@ -84,7 +84,7 @@ Nginx deployments must add an equivalent rule inside the relevant server block:
         return 403;
     }
 
-Keep the CV file at public/doc/cv.pdf for the current controller implementation. Do not expose the document through another public alias or CDN URL. If you change the file location, update FrontendController::downloadCv() accordingly.
+Keep the CV file at public/doc/cv.pdf for the current controller implementation. Do not expose the document through another public alias or CDN URL. If you change the file location, update FrontendController::downloadCv() accordingly. Hire-request PDFs are saved under storage/app/private/hire-requests and are not directly web-accessible.
 
 ## Production deployment checklist
 - Set APP_ENV=production, APP_DEBUG=false, a strong APP_KEY, and the correct HTTPS APP_URL.
