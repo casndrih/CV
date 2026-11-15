@@ -1,6 +1,7 @@
 name: Extract CV source archive
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
@@ -36,7 +37,6 @@ jobs:
             source_dir="$workdir"
           fi
 
-          # Keep the archive and this extraction workflow out of the extracted payload.
           rsync -a --exclude='.git' --exclude='cv.zip' \
             --exclude='.github/workflows/extract-cv-source.yml' \
             "$source_dir/" ./
