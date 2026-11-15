@@ -948,8 +948,7 @@
     {{-- Include scripts only once --}}
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    {{-- Lottie animation --}}
-    {{-- Lottie animation --}}
+    {{-- Portfolio animation --}}
     <script>
         lottie.loadAnimation({
             container: document.getElementById('docs-animation'),
