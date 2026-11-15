@@ -37,7 +37,11 @@ jobs:
             source_dir="$workdir"
           fi
 
+          # Never publish environment files or credentials from the source archive.
+          # Keep only the safe template; real environment files stay out of Git.
           rsync -a --exclude='.git' --exclude='cv.zip' \
+            --exclude='.env' --exclude='.env-original' \
+            --include='.env.example' --exclude='.env.*' \
             --exclude='.github/workflows/extract-cv-source.yml' \
             "$source_dir/" ./
 
