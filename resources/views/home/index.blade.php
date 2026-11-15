@@ -17,7 +17,7 @@
             <div class="text-center">
                 <h2 class="text-xl font-semibold dark:text-white">Casper N'drih</h2>
 
-                <p class="text-md text-blue-500 underline">IT Influstructure | Full Stack Developer</p>
+                <p class="text-md text-blue-500 underline">IT Infrastructure | Full-Stack Developer</p>
 
                 <div class="flex justify-center items-center mt-4 gap-2">
                     <a href="https://facebook.com/cndrih1"
