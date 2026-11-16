@@ -32,7 +32,7 @@
     <link rel="icon" type="image/svg+xml" href="{{ URL::asset('/favicon.svg') }}">
 
     <!-- CSS -->
-    <link href="{{ URL::asset('/css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -43,7 +43,7 @@
     @yield('footer')
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.1/lottie.min.js"></script>
-    <script src="{{ URL::asset('/js/app.js') }}"></script>
+    <script src="{{ mix('/js/app.js') }}"></script>
     @yield('js')
 </body>
 
