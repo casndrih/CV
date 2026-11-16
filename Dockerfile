@@ -21,7 +21,7 @@ RUN npm run production
 FROM php:8.3-apache-bookworm AS runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu-dev libzip-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
-    libonig-dev unzip \
+    libonig-dev libsqlite3-dev unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" pdo_sqlite mbstring exif pcntl bcmath gd zip intl opcache \
     && a2enmod rewrite headers \
