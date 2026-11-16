@@ -16,7 +16,11 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run production
+RUN npm run production \
+    && test -s public/css/app.css \
+    && test -s public/js/app.js \
+    && test -s public/mix-manifest.json \
+    && grep -q 'tailwindcss v3' public/css/app.css
 
 FROM php:8.3-apache-bookworm AS runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -41,6 +45,9 @@ COPY --from=frontend /app/public ./public
 COPY docker/render-entrypoint.sh /usr/local/bin/render-entrypoint
 RUN chmod +x /usr/local/bin/render-entrypoint \
     && mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+    && test -s public/css/app.css \
+    && test -s public/js/app.js \
+    && test -s public/mix-manifest.json \
     && chown -R www-data:www-data storage bootstrap/cache
 
 EXPOSE 10000
